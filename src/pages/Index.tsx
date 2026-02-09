@@ -1,34 +1,45 @@
-// Update this page (the content is just a fallback if you fail to update the page)
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { BlindEntry } from '@/components/BlindEntry';
+import { Philosophy } from '@/components/Philosophy';
+import { TheSpace } from '@/components/TheSpace';
+import { MembershipPortal } from '@/components/MembershipPortal';
 
 const Index = () => {
+  const [isUnlocked, setIsUnlocked] = useState(false);
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
-      {/* This is a placeholder page. 
-        It demonstrates how to use "shadcn-ui" components and Tailwind CSS.
-        The AI interprets these imports as available UI primitives.
-      */}
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center">Welcome to Your Project</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-center text-muted-foreground">
-            Start building your application by editing <code className="bg-muted px-1 rounded">src/pages/Index.tsx</code>
-          </p>
-          
-          <div className="space-y-2">
-            <Input placeholder="Enter your project name..." />
-            <Button className="w-full">
-              Create Something Amazing
-            </Button>
+    <main className="relative min-h-screen bg-black overflow-x-hidden">
+      <AnimatePresence>
+        {!isUnlocked && (
+          <BlindEntry onUnlock={() => setIsUnlocked(true)} />
+        )}
+      </AnimatePresence>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isUnlocked ? 1 : 0 }}
+        transition={{ duration: 2, ease: "easeInOut" }}
+        className={!isUnlocked ? 'hidden' : 'block'}
+      >
+        <Philosophy />
+        <TheSpace />
+        <MembershipPortal />
+      </motion.div>
+
+      {/* Persistent Navigation (Minimal) */}
+      {isUnlocked && (
+        <nav className="fixed top-8 left-8 right-8 z-50 flex justify-between items-center pointer-events-none">
+          <span className="font-display text-2xl tracking-[0.2em] pointer-events-auto mix-blend-difference text-white">
+            KONTUR
+          </span>
+          <div className="flex gap-8 text-[10px] tracking-widest uppercase pointer-events-auto mix-blend-difference text-white">
+            <a href="#about" className="hover:opacity-50 transition-opacity">Philosophy</a>
+            <a href="#booking" className="hover:opacity-50 transition-opacity">Request</a>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </nav>
+      )}
+    </main>
   );
 };
 
